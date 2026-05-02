@@ -238,12 +238,12 @@ img{display:block;max-width:100%}
 .honor-none{background:var(--surface-2);color:var(--ink-3);border:1px solid var(--border)}
 
 /* COMBINED CHECKLIST G11+G12 — clean vertical list */
-.checklist-level-header{font-size:.9rem;font-weight:800;color:#fff;padding:10px 16px;background:linear-gradient(135deg,var(--accent),var(--violet));border-radius:var(--r10);margin-bottom:0;margin-top:20px;display:flex;align-items:center;gap:8px;letter-spacing:.01em}
+.checklist-level-header{font-size:.9rem;font-weight:800;color:#fff;padding:10px 16px;background:linear-gradient(135deg,var(--accent),var(--violet));border-radius:var(--r10);margin-bottom:0;margin-top:20px;display:flex;align-items:center;gap:8px;letter-spacing:.01em;width:100%;box-sizing:border-box}
 .checklist-level-header:first-child{margin-top:0}
-.checklist-row-label{font-size:.68rem;font-weight:800;color:var(--ink-4);text-transform:uppercase;letter-spacing:.12em;margin:14px 0 6px;padding-left:4px;display:flex;align-items:center;gap:6px}
+.checklist-row-label{font-size:.68rem;font-weight:800;color:var(--ink-4);text-transform:uppercase;letter-spacing:.12em;margin:14px 0 6px;padding-left:4px;display:flex;align-items:center;gap:6px;width:100%}
 .checklist-row-label::after{content:'';flex:1;height:1px;background:var(--border)}
-.checklist-h-grid{display:flex;flex-direction:column;gap:0;margin-bottom:0}
-.checklist-h-item{background:var(--paper);border:none;border-bottom:1px solid var(--border);border-radius:0;padding:11px 14px;display:flex;align-items:center;gap:12px;transition:background var(--trans)}
+.checklist-h-grid{display:flex;flex-direction:column;gap:0;margin-bottom:0;width:100%}
+.checklist-h-item{background:var(--paper);border:none;border-bottom:1px solid var(--border);border-radius:0;padding:11px 14px;display:flex;align-items:center;gap:10px;width:100%;box-sizing:border-box;transition:background var(--trans)}
 .checklist-h-item:first-child{border-top:1px solid var(--border);border-radius:var(--r8) var(--r8) 0 0}
 .checklist-h-item:last-child{border-radius:0 0 var(--r8) var(--r8)}
 .checklist-h-item:only-child{border-radius:var(--r8)}
@@ -255,12 +255,17 @@ img{display:block;max-width:100%}
 .status-failed .checklist-h-dot{background:var(--rose)}
 .status-pending .checklist-h-dot{background:var(--amber)}
 .checklist-h-info{flex:1;min-width:0}
-.checklist-h-name{font-size:.84rem;font-weight:600;color:var(--ink);line-height:1.3;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.checklist-h-type{font-size:.68rem;color:var(--ink-4);margin-top:1px}
+.checklist-h-name{font-size:.84rem;font-weight:600;color:var(--ink);line-height:1.3;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.checklist-h-type{font-size:.68rem;color:var(--ink-4);margin-top:2px}
+.checklist-h-status{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-left:auto}
 .checklist-h-select{padding:5px 10px;border:1.5px solid var(--border);border-radius:var(--r6);font-size:.76rem;background:var(--paper);color:var(--ink);outline:none;min-width:110px;flex-shrink:0;cursor:pointer}
 .status-passed .checklist-h-select{border-color:var(--emerald);background:var(--emerald-s);color:#065f46}
 .status-failed .checklist-h-select{border-color:var(--rose);background:var(--rose-s);color:var(--rose)}
-.checklist-section-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r12);overflow:hidden;margin-top:10px}
+.checklist-section-block{background:var(--surface);border:1px solid var(--border);border-radius:var(--r12);overflow:hidden;margin-top:10px;width:100%}
+.checklist-add-btn{display:flex;align-items:center;gap:8px;padding:10px 14px;background:transparent;border:none;border-top:1.5px dashed var(--border);width:100%;cursor:pointer;font-size:.8rem;font-weight:600;color:var(--accent);transition:all var(--trans)}
+.checklist-add-btn:hover{background:var(--accent-s)}
+.checklist-custom-del{width:22px;height:22px;border:none;background:transparent;border-radius:var(--r4);cursor:pointer;color:var(--ink-5);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all var(--trans)}
+.checklist-custom-del:hover{background:var(--rose-s);color:var(--rose)}
 .add-subj-indicator{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;background:var(--accent-s);color:var(--accent);border:1.5px dashed var(--accent);border-radius:var(--r8);font-size:.77rem;font-weight:600;cursor:pointer;transition:all var(--trans)}
 .add-subj-indicator:hover{background:var(--accent);color:#fff}
 
@@ -602,7 +607,7 @@ img{display:block;max-width:100%}
           </div>
           <div class="checklist-progress"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="progress-bar-wrap"><div class="progress-bar-fill" id="tChecklistBar" style="width:0%"></div></div><div class="progress-label" id="tChecklistLabel">0 / 0 passed</div></div>
           <div class="checklist-legend"><div class="legend-item"><div class="legend-dot" style="background:var(--emerald)"></div>Passed</div><div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Failed</div><div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Pending</div></div>
-          <div class="checklist-grid" id="tChecklistGrid"></div>
+          <div id="tChecklistGrid" style="display:flex;flex-direction:column;gap:0;"></div>
         </div>
       </div>
 
@@ -776,7 +781,7 @@ img{display:block;max-width:100%}
           </div>
           <div class="checklist-progress"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg><div class="progress-bar-wrap"><div class="progress-bar-fill" id="sChecklistBar" style="width:0%"></div></div><div class="progress-label" id="sChecklistLabel">0 / 7 passed</div></div>
           <div class="checklist-legend"><div class="legend-item"><div class="legend-dot" style="background:var(--emerald)"></div>Passed</div><div class="legend-item"><div class="legend-dot" style="background:var(--rose)"></div>Failed</div><div class="legend-item"><div class="legend-dot" style="background:var(--amber)"></div>Pending (set by adviser)</div></div>
-          <div class="checklist-grid" id="sChecklistGrid"></div>
+          <div id="sChecklistGrid" style="display:flex;flex-direction:column;gap:0;"></div>
         </div>
       </div>
 
@@ -1053,6 +1058,10 @@ var studentAccounts = {
 
 // Checklist: teacher sets status per student per subject
 var checklistStatus = {};
+
+// Custom subjects added by teacher per semester
+var customSubjects = {g11sem1:[],g11sem2:[],sem1:[],sem2:[]};
+var customSubjIdCounter = 1;
 
 // Transferee records: array of {studentId, school, year, grade, grades:{}, locked:true}
 var transfereeRecords = [];
@@ -1527,16 +1536,17 @@ function renderTeacherChecklist(){
   if(!checklistStatus[sid])checklistStatus[sid]={};
   var statuses=checklistStatus[sid];
   var levels=[
-    {label:'Grade 11 — 1st Semester',subs:SUBJECTS.g11sem1},
-    {label:'Grade 11 — 2nd Semester',subs:SUBJECTS.g11sem2},
-    {label:'Grade 12 — 1st Semester',subs:SUBJECTS.sem1},
-    {label:'Grade 12 — 2nd Semester',subs:SUBJECTS.sem2},
+    {label:'Grade 11 — 1st Semester',key:'g11sem1',subs:SUBJECTS.g11sem1},
+    {label:'Grade 11 — 2nd Semester',key:'g11sem2',subs:SUBJECTS.g11sem2},
+    {label:'Grade 12 — 1st Semester',key:'sem1',subs:SUBJECTS.sem1},
+    {label:'Grade 12 — 2nd Semester',key:'sem2',subs:SUBJECTS.sem2},
   ];
   var totalPass=0,totalCount=0;
   var html='';
   levels.forEach(function(lvl){
-    var coreSubs=lvl.subs.filter(function(s){return s.type==='core';});
-    var appliedSubs=lvl.subs.filter(function(s){return s.type!=='core';});
+    var allSubs=lvl.subs.concat(customSubjects[lvl.key]||[]);
+    var coreSubs=allSubs.filter(function(s){return s.type==='core';});
+    var appliedSubs=allSubs.filter(function(s){return s.type!=='core';});
     html+='<div class="checklist-level-header"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'+lvl.label+'</div>';
     function renderRow(subs,typeLabel){
       if(!subs.length)return;
@@ -1546,23 +1556,41 @@ function renderTeacherChecklist(){
         var st=statuses[sub.id]||'pending';
         if(st==='passed')totalPass++;
         totalCount++;
+        var isCustom=!!(sub.custom);
         html+='<div class="checklist-h-item status-'+st+'" id="tcitem_'+sub.id+'">';
         html+='<div class="checklist-h-dot"></div>';
         html+='<div class="checklist-h-info"><div class="checklist-h-name">'+sub.name+'</div>';
-        html+='<div class="checklist-h-type">'+sub.short+' · <span class="chip chip-'+sub.type+'" style="font-size:.58rem;padding:1px 6px">'+sub.type+'</span></div></div>';
+        html+='<div class="checklist-h-type">'+sub.short+' · <span class="chip chip-'+sub.type+'" style="font-size:.58rem;padding:1px 6px">'+sub.type+'</span>'+(isCustom?'<span class="chip" style="font-size:.58rem;padding:1px 6px;background:var(--violet-s);color:var(--violet);margin-left:4px">custom</span>':'')+'</div></div>';
+        html+='<div class="checklist-h-status">';
         html+='<select class="checklist-h-select" onchange="setTeacherChecklist(\''+sid+'\',\''+sub.id+'\',this.value,this)">';
         html+='<option value="pending"'+(st==='pending'?' selected':'')+'>⏳ Pending</option>';
         html+='<option value="passed"'+(st==='passed'?' selected':'')+'>✓ Passed</option>';
         html+='<option value="failed"'+(st==='failed'?' selected':'')+'>✗ Failed</option>';
-        html+='</select></div>';
+        html+='</select>';
+        if(isCustom){
+          html+='<button class="checklist-custom-del" title="Remove" onclick="removeCustomSubject(\''+lvl.key+'\',\''+sub.id+'\')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>';
+        }
+        html+='</div>';
+        html+='</div>';
       });
+      html+='<button class="checklist-add-btn" onclick="openAddSubjectModal(\''+lvl.key+'\')">';
+      html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Subject</button>';
       html+='</div></div>';
     }
     renderRow(coreSubs,'Core Subjects');
     renderRow(appliedSubs,'Applied / Specialized');
+    // If both sections are empty (shouldn't happen), still show add button
+    if(!coreSubs.length&&!appliedSubs.length){
+      html+='<div class="checklist-section-block"><div class="checklist-h-grid">';
+      html+='<button class="checklist-add-btn" onclick="openAddSubjectModal(\''+lvl.key+'\')">';
+      html+='<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Add Subject</button>';
+      html+='</div></div>';
+    }
   });
   document.getElementById('tChecklistGrid').innerHTML=html;
-  var pct=totalCount?Math.round(totalPass/totalCount*100):0;
+  var allCustom=[].concat(customSubjects.g11sem1,customSubjects.g11sem2,customSubjects.sem1,customSubjects.sem2);
+  var allCount=[].concat(SUBJECTS.g11sem1,SUBJECTS.g11sem2,SUBJECTS.sem1,SUBJECTS.sem2,allCustom).length;
+  var pct=allCount?Math.round(totalPass/totalCount*100):0;
   document.getElementById('tChecklistBar').style.width=pct+'%';
   document.getElementById('tChecklistLabel').textContent=totalPass+' / '+totalCount+' passed ('+pct+'%)';
 }
@@ -1575,7 +1603,8 @@ function setTeacherChecklist(sid,subjectId,value,selectEl){
   // update progress bar
   var sel=document.getElementById('checklistStudentSel');
   var curSid=sel?sel.value:sid;
-  var allSubs=[].concat(SUBJECTS.g11sem1,SUBJECTS.g11sem2,SUBJECTS.sem1,SUBJECTS.sem2);
+  var allCustom=[].concat(customSubjects.g11sem1,customSubjects.g11sem2,customSubjects.sem1,customSubjects.sem2);
+  var allSubs=[].concat(SUBJECTS.g11sem1,SUBJECTS.g11sem2,SUBJECTS.sem1,SUBJECTS.sem2,allCustom);
   var passed=0;
   allSubs.forEach(function(s){if((checklistStatus[curSid]||{})[s.id]==='passed')passed++;});
   var total=allSubs.length,pct=total?Math.round(passed/total*100):0;
@@ -2025,19 +2054,19 @@ function renderStudentGrades(){
 // STUDENT CHECKLIST — READ ONLY (teacher sets) — Combined G11 + G12
 function renderStudentChecklist(){
   var sid=loggedInStudentId;if(!sid)return;
-  var s=studentsMap[sid];
   var statuses=(checklistStatus[sid])||{};
   var levels=[
-    {label:'Grade 11 — 1st Semester',subs:SUBJECTS.g11sem1},
-    {label:'Grade 11 — 2nd Semester',subs:SUBJECTS.g11sem2},
-    {label:'Grade 12 — 1st Semester',subs:SUBJECTS.sem1},
-    {label:'Grade 12 — 2nd Semester',subs:SUBJECTS.sem2},
+    {label:'Grade 11 — 1st Semester',key:'g11sem1',subs:SUBJECTS.g11sem1},
+    {label:'Grade 11 — 2nd Semester',key:'g11sem2',subs:SUBJECTS.g11sem2},
+    {label:'Grade 12 — 1st Semester',key:'sem1',subs:SUBJECTS.sem1},
+    {label:'Grade 12 — 2nd Semester',key:'sem2',subs:SUBJECTS.sem2},
   ];
   var totalPass=0,totalCount=0;
   var html='';
   levels.forEach(function(lvl){
-    var coreSubs=lvl.subs.filter(function(s){return s.type==='core';});
-    var appliedSubs=lvl.subs.filter(function(s){return s.type!=='core';});
+    var allSubs=lvl.subs.concat(customSubjects[lvl.key]||[]);
+    var coreSubs=allSubs.filter(function(s){return s.type==='core';});
+    var appliedSubs=allSubs.filter(function(s){return s.type!=='core';});
     html+='<div class="checklist-level-header"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>'+lvl.label+'</div>';
     function renderRow(subs,typeLabel){
       if(!subs.length)return;
@@ -2047,12 +2076,19 @@ function renderStudentChecklist(){
         var st=statuses[sub.id]||'pending';
         if(st==='passed')totalPass++;
         totalCount++;
-        var statusIcon=st==='passed'?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>':st==='failed'?'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>':'<span style="font-size:.75rem;color:var(--amber)">⏳</span>';
+        var statusIcon=st==='passed'
+          ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>'
+          :st==='failed'
+          ?'<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--rose)" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>'
+          :'<span style="font-size:.8rem">⏳</span>';
+        var statusColor=st==='passed'?'var(--emerald)':st==='failed'?'var(--rose)':'var(--amber)';
         html+='<div class="checklist-h-item status-'+st+'">';
         html+='<div class="checklist-h-dot"></div>';
-        html+='<div class="checklist-h-info"><div class="checklist-h-name">'+sub.name+'</div>';
-        html+='<div class="checklist-h-type">'+sub.short+' · <span class="chip chip-'+sub.type+'" style="font-size:.58rem;padding:1px 6px">'+sub.type+'</span></div></div>';
-        html+='<div style="display:flex;align-items:center;gap:6px;flex-shrink:0">'+statusIcon+'<span style="font-size:.76rem;font-weight:700;color:'+(st==='passed'?'var(--emerald)':st==='failed'?'var(--rose)':'var(--amber)')+'">'+st.charAt(0).toUpperCase()+st.slice(1)+'</span></div>';
+        html+='<div class="checklist-h-info">';
+        html+='<div class="checklist-h-name">'+sub.name+'</div>';
+        html+='<div class="checklist-h-type">'+sub.short+' · <span class="chip chip-'+sub.type+'" style="font-size:.58rem;padding:1px 6px">'+sub.type+'</span>'+(sub.custom?'<span class="chip" style="font-size:.58rem;padding:1px 6px;background:var(--violet-s);color:var(--violet);margin-left:4px">custom</span>':'')+'</div>';
+        html+='</div>';
+        html+='<div class="checklist-h-status">'+statusIcon+'<span style="font-size:.76rem;font-weight:700;color:'+statusColor+'">'+st.charAt(0).toUpperCase()+st.slice(1)+'</span></div>';
         html+='</div>';
       });
       html+='</div></div>';
@@ -2138,9 +2174,77 @@ function renderParentProfile(){
 }
 
 // ═══════════════════════════════════════════════════
+// CUSTOM SUBJECTS
+// ═══════════════════════════════════════════════════
+function openAddSubjectModal(semKey){
+  document.getElementById('addSubjSemKey').value=semKey;
+  document.getElementById('addSubjName').value='';
+  document.getElementById('addSubjShort').value='';
+  document.getElementById('addSubjType').value='applied';
+  openModal('addSubjectModal');
+  setTimeout(function(){document.getElementById('addSubjName').focus();},120);
+}
+
+function saveCustomSubject(){
+  var semKey=document.getElementById('addSubjSemKey').value;
+  var name=(document.getElementById('addSubjName').value||'').trim();
+  var short=(document.getElementById('addSubjShort').value||'').trim();
+  var type=document.getElementById('addSubjType').value;
+  if(!name||!short){showToast('Please fill in Subject Name and Short Name','error');return;}
+  var id='custom_'+(customSubjIdCounter++);
+  if(!customSubjects[semKey])customSubjects[semKey]=[];
+  customSubjects[semKey].push({id:id,name:name,short:short,type:type,custom:true});
+  closeModal('addSubjectModal');
+  renderTeacherChecklist();
+  renderStudentChecklist();
+  showToast('"'+name+'" added to checklist','success');
+}
+
+function removeCustomSubject(semKey,subId){
+  if(!customSubjects[semKey])return;
+  customSubjects[semKey]=customSubjects[semKey].filter(function(s){return s.id!==subId;});
+  renderTeacherChecklist();
+  renderStudentChecklist();
+  showToast('Subject removed','info');
+}
+
+// ═══════════════════════════════════════════════════
 // INIT
 // ═══════════════════════════════════════════════════
 applyTheme();
 </script>
+<!-- Add Subject Modal -->
+<div class="modal" id="addSubjectModal">
+  <div class="modal-box">
+    <div class="modal-head">
+      <div class="modal-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Custom Subject</div>
+      <button class="modal-close" onclick="closeModal('addSubjectModal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    </div>
+    <div class="modal-body">
+      <input type="hidden" id="addSubjSemKey">
+      <div class="form-grid" style="grid-template-columns:1fr 1fr;margin-bottom:0">
+        <div class="form-field" style="margin-bottom:14px">
+          <label>Subject Name <span style="color:var(--rose)">*</span></label>
+          <input id="addSubjName" placeholder="e.g. Practical Research 3" autocomplete="off">
+        </div>
+        <div class="form-field" style="margin-bottom:14px">
+          <label>Short Name <span style="color:var(--rose)">*</span></label>
+          <input id="addSubjShort" placeholder="e.g. PR3" autocomplete="off">
+        </div>
+      </div>
+      <div class="form-field">
+        <label>Subject Type</label>
+        <select id="addSubjType" style="width:100%;padding:9px 12px;border:1.5px solid var(--border);border-radius:var(--r8);font-size:.85rem;color:var(--ink);background:var(--surface);outline:none">
+          <option value="core">Core Subject</option>
+          <option value="applied" selected>Applied / Specialized</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('addSubjectModal')">Cancel</button>
+      <button class="btn btn-primary" onclick="saveCustomSubject()"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Subject</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
