@@ -478,13 +478,9 @@ img{display:block;max-width:100%}
 </style>
 <!-- ════ FIREBASE SDK (must load before body scripts) ════ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-storage-compat.js"></script>
 </head>
 <body>
-
-<div id="recaptcha-container" style="display:none"></div>
 
 <div id="loadingScreen"><div class="loader"></div><div class="loading-label">AUTHENTICATING…</div></div>
 
@@ -749,56 +745,7 @@ img{display:block;max-width:100%}
           <div class="info-card"><div class="info-label">Contact</div><div class="info-value">0912 345 6789</div></div>
           <div class="info-card"><div class="info-label">Email</div><div class="info-value">b.bontoyan@pcshs.edu.ph</div></div>
         </div>
-        <div class="card" style="margin-top:16px">
-          <div class="card-head">
-            <div class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>Account Security</div>
-          </div>
-          <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="btn btn-outline" onclick="openModal('changePasswordModal');document.getElementById('changePwUid').value='T001';document.getElementById('changePwRole').value='teacher'">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-              Change Password
-            </button>
-            <button class="btn btn-outline" onclick="openPhoneOtpModal()">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.72 6.72l.91-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-              Verify Phone (SMS OTP)
-            </button>
-          </div>
-        </div>
-        <div class="card" style="margin-top:16px">
-          <div class="card-head">
-            <div class="card-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Firestore Security Rules (Active)</div>
-          </div>
-          <pre style="background:var(--surface-2);border:1px solid var(--border);border-radius:var(--r8);padding:14px;font-size:.73rem;color:var(--ink-2);overflow-x:auto;line-height:1.6;margin:0">rules_version = '2';
-service cloud.firestore {
-  match /databases/{db}/documents {
-    // Teachers: only authenticated teacher UID
-    match /users/{uid} {
-      allow read, write: if request.auth != null
-        &amp;&amp; request.auth.token.email.matches('.*@pcshs\\.edu\\.ph');
-    }
-    // Students: read own data; teacher can write
-    match /students/{sid} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null
-        &amp;&amp; request.auth.token.email.matches('.*@pcshs\\.edu\\.ph');
-    }
-    // Grades: teacher writes, student reads own
-    match /grades/{sid} {
-      allow read: if request.auth != null;
-      allow write: if request.auth != null
-        &amp;&amp; request.auth.token.email.matches('.*@pcshs\\.edu\\.ph');
-    }
-    // Student accounts: read only by owner
-    match /studentAccounts/{lrn} {
-      allow read, write: if request.auth != null;
-    }
-    // Config / checklist / anecdotal / transferees
-    match /{col}/{doc} {
-      allow read, write: if request.auth != null;
-    }
-  }
-}</pre>
-        </div>
+      </div>
 
     </div>
   </div>
@@ -950,11 +897,6 @@ service cloud.firestore {
       <div class="form-grid"><div class="form-field"><label>LRN (12 digits) *</label><input id="editLRN" maxlength="12" required></div><div class="form-field"><label>Contact Number</label><input id="editContact"></div></div>
       <div class="form-grid"><div class="form-field"><label>Grade Level</label><select id="editGrade"><option>Grade 11</option><option>Grade 12</option></select></div><div class="form-field"><label>Section</label><input id="editSection"></div></div>
       <div class="form-grid"><div class="form-field"><label>Strand</label><select id="editStrand"><option>STEM</option><option>ABM</option><option>HUMSS</option><option>ICT</option><option>HE</option></select></div><div class="form-field"><label>Parent/Guardian</label><input id="editParent"></div></div>
-      <div class="form-field" style="margin-top:8px">
-        <label style="font-size:.78rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:6px">Update Photo (Storage)</label>
-        <input type="file" id="editPhoto" accept="image/*" style="font-size:.82rem" onchange="previewEditPhoto(this)">
-        <img id="editPhotoPreview" style="display:none;width:60px;height:60px;border-radius:50%;object-fit:cover;margin-top:8px;border:2px solid var(--border)">
-      </div>
     </div>
     <div class="modal-footer"><button class="btn btn-ghost" onclick="closeModal('editStudentModal')">Cancel</button><button class="btn btn-primary" onclick="saveEditStudent()">Save Changes</button></div>
   </div>
@@ -1169,84 +1111,7 @@ var firebaseConfig = {
 };
 if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 var db = firebase.firestore();
-var auth = firebase.auth();
-var storage = firebase.storage();
 var firestoreReady = false;
-
-// ─── OTP / Phone verification state ───
-var phoneVerifier = null;
-var phoneConfirmResult = null;
-
-// ─── Setup reCAPTCHA for phone OTP ───
-function initRecaptcha() {
-  if (!phoneVerifier) {
-    try {
-      phoneVerifier = new firebase.auth.RecaptchaVerifier('recaptcha-container', { size: 'invisible' });
-    } catch(e) { console.warn('reCAPTCHA init:', e); }
-  }
-}
-
-// ─── Send SMS OTP ───
-async function sendOTP(phone) {
-  initRecaptcha();
-  try {
-    phoneConfirmResult = await auth.signInWithPhoneNumber(phone, phoneVerifier);
-    return true;
-  } catch(e) {
-    console.error('OTP send error:', e);
-    showToast('SMS OTP failed: ' + e.message, 'error');
-    return false;
-  }
-}
-
-// ─── Verify OTP code ───
-async function verifyOTP(code) {
-  if (!phoneConfirmResult) { showToast('No OTP pending', 'error'); return false; }
-  try {
-    await phoneConfirmResult.confirm(code);
-    return true;
-  } catch(e) {
-    showToast('Invalid OTP code', 'error');
-    return false;
-  }
-}
-
-// ─── Force Password Change: detect & prompt on first login ───
-async function checkFirstLogin(uid, role) {
-  try {
-    var col = role === 'teacher' ? 'users' : 'studentAccounts';
-    var doc = await db.collection(col).doc(uid).get();
-    if (doc.exists && doc.data().firstLogin === true) {
-      openModal('changePasswordModal');
-      document.getElementById('changePwUid').value = uid;
-      document.getElementById('changePwRole').value = role;
-      return true; // block navigation until password changed
-    }
-  } catch(e) { console.warn('firstLogin check:', e); }
-  return false;
-}
-
-// ─── Save new password after forced change ───
-async function saveNewPassword() {
-  var uid = document.getElementById('changePwUid').value;
-  var role = document.getElementById('changePwRole').value;
-  var np = document.getElementById('newPw').value.trim();
-  var cp = document.getElementById('confirmPw').value.trim();
-  if (!np || np.length < 6) { showToast('Password must be at least 6 characters', 'error'); return; }
-  if (np !== cp) { showToast('Passwords do not match', 'error'); return; }
-  var col = role === 'teacher' ? 'users' : 'studentAccounts';
-  try {
-    await db.collection(col).doc(uid).update({ password: np, firstLogin: false });
-    // Also update Firebase Auth password if signed in
-    if (auth.currentUser) {
-      await auth.currentUser.updatePassword(np).catch(function(){});
-    }
-    closeModal('changePasswordModal');
-    showToast('Password updated successfully ✓', 'success');
-  } catch(e) {
-    showToast('Error saving password: ' + e.message, 'error');
-  }
-}
 
 // ─── Seed + Load All Data from Firestore ───
 async function loadAllData() {
@@ -1275,9 +1140,9 @@ async function loadAllData() {
     var accSnap = await db.collection('studentAccounts').get();
     if (accSnap.empty) {
       var seedAccs = {
-        '123456789012': {password:'student123',studentId:'S001',firstLogin:false},
-        '123456789013': {password:'student123',studentId:'S002',firstLogin:false},
-        '123456789014': {password:'student123',studentId:'S003',firstLogin:false},
+        '123456789012': {password:'student123',studentId:'S001'},
+        '123456789013': {password:'student123',studentId:'S002'},
+        '123456789014': {password:'student123',studentId:'S003'},
       };
       var batch2 = db.batch();
       Object.keys(seedAccs).forEach(function(lrn) {
@@ -1293,7 +1158,7 @@ async function loadAllData() {
     // ── TEACHER ACCOUNT ──
     var teacherDoc = await db.collection('users').doc('T001').get();
     if (!teacherDoc.exists) {
-      await db.collection('users').doc('T001').set({role:'teacher',password:'teacher123',name:'Ms. Bonabel G. Bontoyan',firstLogin:false});
+      await db.collection('users').doc('T001').set({role:'teacher',password:'teacher123',name:'Ms. Bonabel G. Bontoyan'});
     }
 
     // ── GRADES ──
@@ -1559,33 +1424,19 @@ async function handleLogin(e){
     // Always load fresh data from Firestore on login
     await loadAllData();
     var ok=false;
-    var authUid = uid; // used for firstLogin check
     if(currentRole==='teacher'){
-      // Firebase Auth — sign in with email derived from teacher ID
-      var teacherEmail = uid + '@pcshs.edu.ph';
-      try {
-        await auth.signInWithEmailAndPassword(teacherEmail, pw);
-        ok = true;
-      } catch(authErr) {
-        // Fallback: check Firestore credentials (for demo/legacy users)
-        var tDoc=await db.collection('users').doc(uid).get();
-        if(tDoc.exists&&tDoc.data().role==='teacher'&&tDoc.data().password===pw){ok=true;}
-      }
+      // Check teacher credentials in Firestore
+      var tDoc=await db.collection('users').doc(uid).get();
+      if(tDoc.exists&&tDoc.data().role==='teacher'&&tDoc.data().password===pw){ok=true;}
     }
     else if(currentRole==='student'){
-      var studentEmail = uid + '@student.pcshs.edu.ph';
-      try {
-        await auth.signInWithEmailAndPassword(studentEmail, pw);
-        var aDoc2 = await db.collection('studentAccounts').doc(uid).get();
-        if(aDoc2.exists){ ok=true; loggedInStudentId=aDoc2.data().studentId; authUid=uid; }
-      } catch(authErr) {
-        // Fallback: Firestore credentials
-        var acc=studentAccounts[uid];
-        if(acc&&acc.password===pw){ok=true;loggedInStudentId=acc.studentId;}
-        else {
-          var aDoc=await db.collection('studentAccounts').doc(uid).get();
-          if(aDoc.exists&&aDoc.data().password===pw){ok=true;loggedInStudentId=aDoc.data().studentId;}
-        }
+      // Check student account in Firestore
+      var acc=studentAccounts[uid];
+      if(acc&&acc.password===pw){ok=true;loggedInStudentId=acc.studentId;}
+      else {
+        // Try fetching directly from Firestore
+        var aDoc=await db.collection('studentAccounts').doc(uid).get();
+        if(aDoc.exists&&aDoc.data().password===pw){ok=true;loggedInStudentId=aDoc.data().studentId;}
       }
     }
     else if(currentRole==='parent'){
@@ -1602,10 +1453,6 @@ async function handleLogin(e){
       if(currentRole==='teacher'){document.getElementById('teacherDashboard').classList.add('active');initTeacherDashboard();}
       else if(currentRole==='student'){document.getElementById('studentDashboard').classList.add('active');initStudentDashboard();}
       else if(currentRole==='parent'){document.getElementById('parentDashboard').classList.add('active');initParentDashboard();}
-      // ─── First Login Check ───
-      if(currentRole==='teacher'||currentRole==='student'){
-        await checkFirstLogin(authUid, currentRole);
-      }
     }else{
       void errBox.offsetWidth;errBox.classList.add('show');
       document.getElementById('errorTxt').textContent='Invalid credentials. Please try again.';
@@ -1619,7 +1466,6 @@ async function handleLogin(e){
 }
 
 function logout(){
-  auth.signOut().catch(function(){});
   sessionStorage.removeItem('pcshs_role');
   sessionStorage.removeItem('pcshs_sid');
   sessionStorage.removeItem('pcshs_pid');
@@ -2147,15 +1993,6 @@ function openEditStudent(sid){
   openModal('editStudentModal');
 }
 
-function previewEditPhoto(input){
-  var preview=document.getElementById('editPhotoPreview');
-  if(input.files&&input.files[0]){
-    var reader=new FileReader();
-    reader.onload=function(e){preview.src=e.target.result;preview.style.display='block';};
-    reader.readAsDataURL(input.files[0]);
-  }
-}
-
 function saveEditStudent(){
   var sid=document.getElementById('editStudentId').value;
   var s=studentsMap[sid];if(!s)return;
@@ -2175,29 +2012,15 @@ function saveEditStudent(){
   s.section=document.getElementById('editSection').value.trim();
   s.strand=document.getElementById('editStrand').value;
   s.parent=document.getElementById('editParent').value.trim();
-
-  function finishEdit(){
-    db.collection('students').doc(sid).set(s).then(function(){
-      showToast('Student profile updated ✓ (Firestore)','success');
-    }).catch(function(err){
-      console.error('Edit student Firestore error:',err);
-      showToast('Updated locally (sync error)','info');
-    });
-    closeModal('editStudentModal');
-    renderStudentTable();renderOverview();populateStudentSelects();
-  }
-
-  var photoInput=document.getElementById('editPhoto');
-  if(photoInput&&photoInput.files&&photoInput.files[0]){
-    var file=photoInput.files[0];
-    var ref=storage.ref('student-photos/'+newLrn+'_'+Date.now());
-    showToast('Uploading photo…','info');
-    ref.put(file).then(function(snap){return snap.ref.getDownloadURL();}).then(function(url){
-      s.photo=url;finishEdit();
-    }).catch(function(){finishEdit();});
-  } else {
-    finishEdit();
-  }
+  // Save to Firestore
+  db.collection('students').doc(sid).set(s).then(function(){
+    showToast('Student profile updated ✓ (Firestore)','success');
+  }).catch(function(err){
+    console.error('Edit student Firestore error:',err);
+    showToast('Updated locally (sync error)','info');
+  });
+  closeModal('editStudentModal');
+  renderStudentTable();renderOverview();populateStudentSelects();
 }
 
 // ═══════════════════════════════════════════════════
@@ -2235,15 +2058,15 @@ function addStudent(e){
   if(studentAccounts[lrn]){showToast('LRN already registered.','error');return;}
   var sid='S00'+nextStudentNum++;
   var parentCode='P'+lrn.substring(1,6);
-  function finishReg(photoUrl){
-    var newStudent={id:sid,firstName:fn,lastName:ln,lrn:lrn,grade:grade,section:section,strand:strand,contact:contact||'—',email:fn.toLowerCase().replace(' ','.')+'.'+ln.toLowerCase()+'@student.pcshs.edu.ph',parent:parent||'—',parentCode:parentCode,photo:photoUrl||null};
+  function finishReg(photoData){
+    var newStudent={id:sid,firstName:fn,lastName:ln,lrn:lrn,grade:grade,section:section,strand:strand,contact:contact||'—',email:fn.toLowerCase().replace(' ','.')+'.'+ln.toLowerCase()+'@student.pcshs.edu.ph',parent:parent||'—',parentCode:parentCode,photo:photoData||null};
     studentsMap[sid]=newStudent;
-    studentAccounts[lrn]={password:pass,studentId:sid,firstLogin:true};
+    studentAccounts[lrn]={password:pass,studentId:sid};
     gradesMap[sid]={};
     // Save to Firestore
     var batch=db.batch();
     batch.set(db.collection('students').doc(sid),newStudent);
-    batch.set(db.collection('studentAccounts').doc(lrn),{password:pass,studentId:sid,firstLogin:true});
+    batch.set(db.collection('studentAccounts').doc(lrn),{password:pass,studentId:sid});
     batch.set(db.collection('grades').doc(sid),{});
     batch.commit().then(function(){
       showToast(fn+' '+ln+' registered! Parent Code: '+parentCode+' (Saved to Firestore ✓)','success');
@@ -2258,21 +2081,9 @@ function addStudent(e){
     renderOverview();populateStudentSelects();renderStudentTable();
   }
   if(photoInput&&photoInput.files&&photoInput.files[0]){
-    // ─── Upload photo to Firebase Storage ───
-    var file = photoInput.files[0];
-    var storageRef = storage.ref('student-photos/' + lrn + '_' + Date.now());
-    showToast('Uploading photo…', 'info');
-    storageRef.put(file).then(function(snapshot){
-      return snapshot.ref.getDownloadURL();
-    }).then(function(url){
-      finishReg(url);
-    }).catch(function(err){
-      console.error('Photo upload error:', err);
-      // Fallback: store as base64
-      var reader=new FileReader();
-      reader.onload=function(ev){finishReg(ev.target.result);};
-      reader.readAsDataURL(file);
-    });
+    var reader=new FileReader();
+    reader.onload=function(ev){finishReg(ev.target.result);};
+    reader.readAsDataURL(photoInput.files[0]);
   }else{finishReg(null);}
 }
 
@@ -2733,116 +2544,8 @@ applyTheme();
   }
 })();
 </script>
-<!-- Force Password Change Modal -->
-<div class="modal" id="changePasswordModal">
-  <div class="modal-box" style="max-width:420px">
-    <div class="modal-head">
-      <div class="modal-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
-        Change Your Password
-      </div>
-    </div>
-    <div class="modal-body">
-      <input type="hidden" id="changePwUid">
-      <input type="hidden" id="changePwRole">
-      <div style="padding:10px 12px;background:var(--amber-s);border:1px solid var(--amber);border-radius:var(--r8);font-size:.8rem;color:var(--amber);margin-bottom:14px">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;margin-right:5px"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <strong>First Login Detected.</strong> Please set a new password before continuing.
-      </div>
-      <div class="form-field" style="margin-bottom:12px">
-        <label style="font-size:.78rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:6px">New Password <span style="color:var(--rose)">*</span></label>
-        <div class="pw-wrap">
-          <input id="newPw" type="password" placeholder="At least 6 characters" autocomplete="new-password" style="width:100%;padding:10px 42px 10px 14px;border:1.5px solid var(--border);border-radius:var(--r8);font-size:.9rem;color:var(--ink);background:var(--surface);outline:none">
-          <button type="button" class="pw-toggle" onclick="togglePw('newPw','eyeNew')"><svg id="eyeNew" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        </div>
-      </div>
-      <div class="form-field">
-        <label style="font-size:.78rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:6px">Confirm Password <span style="color:var(--rose)">*</span></label>
-        <div class="pw-wrap">
-          <input id="confirmPw" type="password" placeholder="Repeat new password" autocomplete="new-password" style="width:100%;padding:10px 42px 10px 14px;border:1.5px solid var(--border);border-radius:var(--r8);font-size:.9rem;color:var(--ink);background:var(--surface);outline:none">
-          <button type="button" class="pw-toggle" onclick="togglePw('confirmPw','eyeConfirm')"><svg id="eyeConfirm" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button>
-        </div>
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="btn btn-primary btn-full" onclick="saveNewPassword()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-        Save New Password
-      </button>
-    </div>
-  </div>
-</div>
-
-<!-- Phone OTP Verification Modal -->
-<div class="modal" id="phoneOtpModal">
-  <div class="modal-box" style="max-width:400px">
-    <div class="modal-head">
-      <div class="modal-title">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 9.1a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.6 0h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 7.91a16 16 0 0 0 6.72 6.72l.91-.85a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-        SMS Phone Verification
-      </div>
-      <button class="modal-close" onclick="closeModal('phoneOtpModal')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    </div>
-    <div class="modal-body">
-      <div id="otpStep1">
-        <div style="font-size:.84rem;color:var(--ink-2);margin-bottom:14px">Enter the phone number to receive a 6-digit verification code.</div>
-        <div class="form-field" style="margin-bottom:12px">
-          <label style="font-size:.78rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:6px">Phone Number (with country code)</label>
-          <input id="otpPhone" type="tel" placeholder="+639XXXXXXXXX" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r8);font-size:.9rem;color:var(--ink);background:var(--surface);outline:none">
-        </div>
-        <button class="btn btn-primary btn-full" onclick="handleSendOTP()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-          Send OTP
-        </button>
-      </div>
-      <div id="otpStep2" style="display:none">
-        <div style="font-size:.84rem;color:var(--ink-2);margin-bottom:14px">Enter the 6-digit code sent to your phone.</div>
-        <div class="form-field" style="margin-bottom:12px">
-          <label style="font-size:.78rem;font-weight:600;color:var(--ink-2);display:block;margin-bottom:6px">OTP Code</label>
-          <input id="otpCode" type="text" placeholder="Enter 6-digit code" maxlength="6" style="width:100%;padding:10px 14px;border:1.5px solid var(--border);border-radius:var(--r8);font-size:1.1rem;letter-spacing:.2em;color:var(--ink);background:var(--surface);outline:none;text-align:center">
-        </div>
-        <button class="btn btn-primary btn-full" onclick="handleVerifyOTP()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
-          Verify OTP
-        </button>
-        <button class="btn btn-ghost btn-full" style="margin-top:8px" onclick="document.getElementById('otpStep1').style.display='';document.getElementById('otpStep2').style.display='none'">← Resend</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-// ─── OTP UI Handlers ───
-async function handleSendOTP(){
-  var phone = (document.getElementById('otpPhone').value||'').trim();
-  if(!phone){showToast('Please enter a phone number','error');return;}
-  showToast('Sending OTP…','info');
-  var ok = await sendOTP(phone);
-  if(ok){
-    document.getElementById('otpStep1').style.display='none';
-    document.getElementById('otpStep2').style.display='';
-    showToast('OTP sent ✓ — check your SMS','success');
-  }
-}
-async function handleVerifyOTP(){
-  var code = (document.getElementById('otpCode').value||'').trim();
-  if(!code){showToast('Please enter the OTP code','error');return;}
-  showToast('Verifying…','info');
-  var ok = await verifyOTP(code);
-  if(ok){
-    closeModal('phoneOtpModal');
-    showToast('Phone verified ✓','success');
-  }
-}
-// ─── Open OTP modal from profile sections ───
-function openPhoneOtpModal(){
-  document.getElementById('otpStep1').style.display='';
-  document.getElementById('otpStep2').style.display='none';
-  document.getElementById('otpPhone').value='';
-  document.getElementById('otpCode').value='';
-  openModal('phoneOtpModal');
-}
-</script>
+<!-- Add Subject Modal -->
+<div class="modal" id="addSubjectModal">
   <div class="modal-box">
     <div class="modal-head">
       <div class="modal-title"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:6px;vertical-align:middle"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>Add Custom Subject</div>
