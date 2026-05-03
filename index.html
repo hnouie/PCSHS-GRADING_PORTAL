@@ -202,13 +202,31 @@ img{display:block;max-width:100%}
 .grade-table tr:hover td{background:var(--surface)}
 .subject-name{font-weight:600;color:var(--ink);font-size:.87rem}
 .subject-teacher{font-size:.75rem;color:var(--ink-3);margin-top:2px}
-.grade-cell{font-size:1.1rem;font-weight:700;color:var(--ink);text-align:center}
-.grade-cell.high{color:var(--emerald)}
-.grade-cell.mid{color:var(--accent)}
-.grade-cell.low{color:var(--amber)}
-.grade-cell.fail{color:var(--rose)}
-.grade-cell.empty{color:var(--ink-5);font-size:.84rem;font-weight:400}
-.final-grade-cell{font-size:1.15rem;font-weight:800;text-align:center}
+/* GRADE CELL COLOR SYSTEM
+   90-100: green (light→dark as grade rises)
+   80-89 : blue  (light→dark as grade rises)
+   75-79 : amber/orange warning zone
+   74↓   : red (fail)
+*/
+.grade-cell{font-size:1.05rem;font-weight:700;text-align:center;border-radius:var(--r6);padding:3px 6px}
+/* 90-94 */ .grade-cell.g90{color:#065f46;background:#d1fae5}
+/* 95-97 */ .grade-cell.g95{color:#064e3b;background:#a7f3d0}
+/* 98-100*/ .grade-cell.g98{color:#022c22;background:#6ee7b7}
+/* 80-84 */ .grade-cell.g80{color:#1e3a8a;background:#dbeafe}
+/* 85-89 */ .grade-cell.g85{color:#1e40af;background:#bfdbfe}
+/* 75-79 */ .grade-cell.g75{color:#92400e;background:#fef3c7}
+/* <75   */ .grade-cell.fail{color:#991b1b;background:#fee2e2}
+.grade-cell.empty{color:var(--ink-5);font-size:.84rem;font-weight:400;background:none}
+.final-grade-cell{font-size:1.1rem;font-weight:800;text-align:center;border-radius:var(--r6);padding:3px 8px}
+/* same classes apply to final-grade-cell */
+.final-grade-cell.g90{color:#065f46;background:#d1fae5}
+.final-grade-cell.g95{color:#064e3b;background:#a7f3d0}
+.final-grade-cell.g98{color:#022c22;background:#6ee7b7}
+.final-grade-cell.g80{color:#1e3a8a;background:#dbeafe}
+.final-grade-cell.g85{color:#1e40af;background:#bfdbfe}
+.final-grade-cell.g75{color:#92400e;background:#fef3c7}
+.final-grade-cell.fail{color:#991b1b;background:#fee2e2}
+.final-grade-cell.empty{color:var(--ink-5);font-size:.84rem;font-weight:400;background:none}
 .sem-avg-row td{background:var(--accent-s);font-weight:700}
 .table-wrap{overflow-x:auto}
 
@@ -222,7 +240,11 @@ img{display:block;max-width:100%}
 .cr-table tr:hover td.name-col{background:var(--surface)}
 .grade-input{width:56px;padding:5px 6px;border:1.5px solid var(--border);border-radius:var(--r6);font-size:.83rem;font-weight:600;text-align:center;background:var(--surface);color:var(--ink);transition:all var(--trans);outline:none}
 .grade-input:focus{border-color:var(--accent);background:var(--paper);box-shadow:0 0 0 3px var(--accent-t)}
-.computed-cell{font-weight:700;color:var(--ink);font-size:.88rem}
+.grade-input.input-fail{border-color:#dc2626!important;background:#fee2e2!important;color:#991b1b!important}
+.grade-input.input-warn{border-color:#d97706!important;background:#fef3c7!important;color:#92400e!important}
+.grade-input.input-blue{border-color:#3b82f6!important;background:#dbeafe!important;color:#1e3a8a!important}
+.grade-input.input-green{border-color:#059669!important;background:#d1fae5!important;color:#065f46!important}
+.computed-cell{font-weight:700;font-size:.88rem;border-radius:var(--r6);padding:3px 8px;text-align:center}
 
 /* AT-RISK BADGE */
 .at-risk-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;background:var(--rose-s);border:1px solid rgba(220,38,38,.25);border-radius:var(--rfull);font-size:.67rem;font-weight:700;color:var(--rose);letter-spacing:.03em}
@@ -478,9 +500,9 @@ img{display:block;max-width:100%}
         <button class="role-tab" onclick="selectRole('parent',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Parent</button>
       </div>
       <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="field"><label id="idLabel">Teacher ID</label><input id="userId" placeholder="e.g. T001" required autocomplete="off"></div>
+        <div class="field"><label id="idLabel">Teacher ID</label><input id="userId" placeholder="e.g. T001" required autocomplete="off" oninput="saveLoginFormState()"></div>
         <div class="field" id="parentCodeField" style="display:none"><label>Parent Access Code</label><input id="parentCode" placeholder="6-digit access code"></div>
-        <div class="field"><label>Password</label><div class="pw-wrap"><input id="password" type="password" placeholder="Enter password" required><button type="button" class="pw-toggle" onclick="togglePw('password','eyeLogin')"><svg id="eyeLogin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+        <div class="field"><label>Password</label><div class="pw-wrap"><input id="password" type="password" placeholder="Enter password" required oninput="saveLoginFormState()"><button type="button" class="pw-toggle" onclick="togglePw('password','eyeLogin')"><svg id="eyeLogin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
         <div class="error-box" id="errorBox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span id="errorTxt">Invalid credentials.</span></div>
         <button type="submit" class="login-submit">Sign In</button>
       </form>
@@ -1172,21 +1194,37 @@ function overallAvg(sid){
 }
 
 function isAtRisk(sid){
+  // A student is at risk if any FINAL grade (avg of q1+q2) in any subject is below 75
   var grades=gradesMap[sid]||{};
-  var subs=[].concat(SUBJECTS.sem1,SUBJECTS.sem2);
-  for(var i=0;i<subs.length;i++){
-    var g=grades[subs[i].id]||{q1:0,q2:0};
-    if((g.q1&&g.q1<75)||(g.q2&&g.q2<75))return true;
+  var allSubs=[].concat(SUBJECTS.g11sem1,SUBJECTS.g11sem2,SUBJECTS.sem1,SUBJECTS.sem2);
+  for(var i=0;i<allSubs.length;i++){
+    var g=grades[allSubs[i].id]||{q1:0,q2:0};
+    if(g.q1&&g.q2){
+      var fg=finalGrade(g.q1,g.q2);
+      if(fg<75)return true;
+    }
   }
   return false;
 }
 
 function gradeColor(g){
-  if(!g)return 'empty';
-  if(g>=90)return 'high';
-  if(g>=85)return 'mid';
-  if(g>=75)return 'low';
+  if(!g||g===0)return 'empty';
+  g=parseFloat(g);
+  if(g>=98)return 'g98';
+  if(g>=95)return 'g95';
+  if(g>=90)return 'g90';
+  if(g>=85)return 'g85';
+  if(g>=80)return 'g80';
+  if(g>=75)return 'g75';
   return 'fail';
+}
+function inputColorClass(v){
+  if(!v||v==='')return '';
+  v=parseFloat(v);
+  if(v>=90)return 'input-green';
+  if(v>=80)return 'input-blue';
+  if(v>=75)return 'input-warn';
+  return 'input-fail';
 }
 
 function recognition(avg){
@@ -1221,6 +1259,14 @@ function selectRole(role,btn){
   document.getElementById('userId').placeholder=placeholders[role];
   document.getElementById('parentCodeField').style.display=role==='parent'?'block':'none';
   document.getElementById('password').placeholder=role==='parent'?'Parent Access Code':'Enter password';
+  sessionStorage.setItem('pcshs_form_role',role);
+}
+
+function saveLoginFormState(){
+  sessionStorage.setItem('pcshs_form_uid',document.getElementById('userId').value);
+  sessionStorage.setItem('pcshs_form_pw',document.getElementById('password').value);
+  var pc=document.getElementById('parentCode');
+  if(pc)sessionStorage.setItem('pcshs_form_pc',pc.value);
 }
 
 function fillDemo(role){
@@ -1252,6 +1298,10 @@ function handleLogin(e){
     }
     if(ok){
       errBox.classList.remove('show');
+      // ── persist session so refresh doesn't log out ──
+      sessionStorage.setItem('pcshs_role',currentRole);
+      if(currentRole==='student')sessionStorage.setItem('pcshs_sid',loggedInStudentId);
+      if(currentRole==='parent')sessionStorage.setItem('pcshs_pid',loggedInParentStudentId);
       document.getElementById('loginPage').style.display='none';
       if(currentRole==='teacher'){document.getElementById('teacherDashboard').classList.add('active');initTeacherDashboard();}
       else if(currentRole==='student'){document.getElementById('studentDashboard').classList.add('active');initStudentDashboard();}
@@ -1264,6 +1314,13 @@ function handleLogin(e){
 }
 
 function logout(){
+  sessionStorage.removeItem('pcshs_role');
+  sessionStorage.removeItem('pcshs_sid');
+  sessionStorage.removeItem('pcshs_pid');
+  sessionStorage.removeItem('pcshs_form_role');
+  sessionStorage.removeItem('pcshs_form_uid');
+  sessionStorage.removeItem('pcshs_form_pw');
+  sessionStorage.removeItem('pcshs_form_pc');
   ['teacherDashboard','studentDashboard','parentDashboard'].forEach(function(id){document.getElementById(id).classList.remove('active');});
   document.getElementById('loginPage').style.display='flex';
   document.getElementById('loginForm').reset();
@@ -1486,30 +1543,40 @@ function renderGradeEntry(){
   html+='<div class="table-wrap"><table class="cr-table"><thead><tr>';
   html+='<th class="name-col">Student</th>';
   subs.forEach(function(sub){html+='<th title="'+sub.name+'"><div>'+sub.short+'</div><div style="font-weight:400;font-size:.67rem;opacity:.7">'+sub.type+'</div></th>';});
-  html+='<th>Curr Avg</th><th>At Risk</th></tr></thead><tbody>';
+  html+='<th>Curr Avg</th><th>Status</th></tr></thead><tbody>';
   students.forEach(function(s){
     var grades=gradesMap[s.id]||{};
     html+='<tr><td class="name-col">'+s.firstName+' '+s.lastName+'<div style="font-size:.71rem;color:var(--ink-4)">'+s.lrn+'</div></td>';
     subs.forEach(function(sub){
       var g=grades[sub.id]||{q1:0,q2:0};
       var val=g[qKey]||'';
-      var isLow=val&&parseFloat(val)<75;
-      html+='<td><input class="grade-input" type="number" min="0" max="100" value="'+(val||'')+'" placeholder="—" '+(isLow?'style="border-color:var(--rose);background:var(--rose-s)"':'')+'onchange="saveGrade(\''+s.id+'\',\''+sub.id+'\',\''+qKey+'\',this.value)" onkeydown="if(event.key===\'Enter\')this.blur()"></td>';
+      var cls=val!==''?inputColorClass(val):'';
+      html+='<td><input class="grade-input '+cls+'" type="number" min="0" max="100" value="'+(val||'')+'" placeholder="—" onchange="saveGrade(\''+s.id+'\',\''+sub.id+'\',\''+qKey+'\',this)" onkeydown="if(event.key===\'Enter\')this.blur()"></td>';
     });
     var cAvg=currentAvg(s.id,sem);
+    var avgCls=cAvg?gradeColor(cAvg):'';
     var risk=isAtRisk(s.id);
-    html+='<td class="computed-cell">'+(cAvg||'—')+'</td>';
-    html+='<td>'+(risk?'<span class="at-risk-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>AT RISK</span>':'<span style="color:var(--emerald);font-size:.75rem;font-weight:600">✓ OK</span>')+'</td>';
+    // At risk only if overall final average is below 75
+    var overallA=overallAvg(s.id);
+    var isOverallAtRisk=overallA&&overallA<75;
+    html+='<td class="computed-cell '+avgCls+'">'+(cAvg||'—')+'</td>';
+    html+='<td>'+(isOverallAtRisk?'<span class="at-risk-badge"><svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>AT RISK</span>':'<span style="color:var(--emerald);font-size:.75rem;font-weight:600">✓ OK</span>')+'</td>';
     html+='</tr>';
   });
   html+='</tbody></table></div>';
   document.getElementById('gradeEntryArea').innerHTML=html;
 }
 
-function saveGrade(studentId,subjectId,qKey,value){
+function saveGrade(studentId,subjectId,qKey,elOrValue){
+  var value=typeof elOrValue==='object'?elOrValue.value:elOrValue;
   if(!gradesMap[studentId])gradesMap[studentId]={};
   if(!gradesMap[studentId][subjectId])gradesMap[studentId][subjectId]={q1:0,q2:0};
   gradesMap[studentId][subjectId][qKey]=parseFloat(value)||0;
+  // Update input color live without full re-render
+  if(typeof elOrValue==='object'&&elOrValue.tagName){
+    var el=elOrValue;
+    el.className='grade-input '+(value!==''?inputColorClass(value):'');
+  }
   renderGradeEntry();
   showToast('Grade saved ✓','success');
 }
@@ -2004,11 +2071,12 @@ function renderStudentGrades(){
   var overallComplete=avg1Complete&&avg2Complete;
   var overall=overallComplete?overallAvg(sid):0;
   var rec=recognition(sem===1?avg1:avg2);
-  var risk=isAtRisk(sid);
   var semComplete=sem===1?avg1Complete:avg2Complete;
   var semAvgVal=sem===1?avg1:avg2;
+  // At risk only when overall final average is below 75
+  var isOverallAtRisk=overall&&overall<75;
   document.getElementById('sHonorLine').innerHTML=
-    semComplete?('<span class="honor-badge '+rec.cls+'">'+rec.text+'</span>&nbsp; Sem Avg: <strong>'+semAvgVal+'</strong>'+(risk?'&nbsp;<span class="at-risk-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>AT RISK</span>':'')):'<span style="color:var(--amber);font-weight:600;font-size:.83rem">⏳ Grades pending — not all subjects graded yet</span>';
+    semComplete?('<span class="honor-badge '+rec.cls+'">'+rec.text+'</span>&nbsp; Sem Avg: <strong>'+semAvgVal+'</strong>'+(isOverallAtRisk?'&nbsp;<span class="at-risk-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/></svg>AT RISK</span>':'')):'<span style="color:var(--amber);font-weight:600;font-size:.83rem">⏳ Grades pending — not all subjects graded yet</span>';
   document.getElementById('sGradeStats').innerHTML=
     '<div class="stat"><div class="stat-header"><div class="stat-label">'+semLabel+' Avg</div><div class="stat-icon si-green"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg></div></div><div class="stat-value">'+(semComplete?(semAvgVal||'—'):'<span style="font-size:1rem;color:var(--amber)">Pending</span>')+'</div><div class="stat-note"><span class="honor-badge '+rec.cls+'" style="font-size:.65rem;padding:2px 7px">'+rec.text+'</span></div></div>'+
     '<div class="stat"><div class="stat-header"><div class="stat-label">Overall Avg</div><div class="stat-icon si-blue"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div></div><div class="stat-value">'+(overallComplete?(overall||'—'):'<span style="font-size:1rem;color:var(--amber)">Pending</span>')+'</div><div class="stat-note">Both semesters</div></div>'+
@@ -2209,9 +2277,48 @@ function removeCustomSubject(semKey,subId){
 }
 
 // ═══════════════════════════════════════════════════
-// INIT
+// INIT — restore session on refresh
 // ═══════════════════════════════════════════════════
 applyTheme();
+(function restoreSession(){
+  // Always restore login form fields first (in case user is on login page)
+  var savedRole=sessionStorage.getItem('pcshs_form_role');
+  var savedUid=sessionStorage.getItem('pcshs_form_uid');
+  var savedPw=sessionStorage.getItem('pcshs_form_pw');
+  var savedPc=sessionStorage.getItem('pcshs_form_pc');
+  if(savedRole){
+    var tabs=document.querySelectorAll('.role-tab');
+    var idx=savedRole==='teacher'?0:savedRole==='student'?1:2;
+    if(tabs[idx])selectRole(savedRole,tabs[idx]);
+  }
+  if(savedUid)document.getElementById('userId').value=savedUid;
+  if(savedPw)document.getElementById('password').value=savedPw;
+  if(savedPc&&document.getElementById('parentCode'))document.getElementById('parentCode').value=savedPc;
+
+  // Now check if there's an active session to restore
+  var role=sessionStorage.getItem('pcshs_role');
+  if(!role)return; // no active session → stay on login page (with form fields restored above)
+  currentRole=role;
+  if(role==='student'){
+    var sid=sessionStorage.getItem('pcshs_sid');
+    if(!sid||!studentsMap[sid])return;
+    loggedInStudentId=sid;
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('studentDashboard').classList.add('active');
+    initStudentDashboard();
+  } else if(role==='teacher'){
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('teacherDashboard').classList.add('active');
+    initTeacherDashboard();
+  } else if(role==='parent'){
+    var pid=sessionStorage.getItem('pcshs_pid');
+    if(!pid||!studentsMap[pid])return;
+    loggedInParentStudentId=pid;
+    document.getElementById('loginPage').style.display='none';
+    document.getElementById('parentDashboard').classList.add('active');
+    initParentDashboard();
+  }
+})();
 </script>
 <!-- Add Subject Modal -->
 <div class="modal" id="addSubjectModal">
