@@ -95,11 +95,7 @@ img{display:block;max-width:100%}
 .error-box.show{display:flex;animation:shake .35s ease}
 .login-submit{width:100%;padding:12px;background:linear-gradient(135deg,var(--accent),var(--violet));color:#fff;border:none;border-radius:var(--r8);font-size:.9rem;font-weight:600;cursor:pointer;transition:all var(--trans)}
 .login-submit:hover{opacity:.9;transform:translateY(-1px);box-shadow:0 6px 20px rgba(29,78,216,.3)}
-.demo-section{margin-top:18px;padding-top:14px;border-top:1px solid var(--border)}
-.demo-label{font-size:.7rem;font-weight:700;color:var(--ink-4);letter-spacing:.1em;text-transform:uppercase;margin-bottom:8px}
-.demo-pills{display:flex;flex-direction:column;gap:5px}
-.demo-pill{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--surface);border:1px solid var(--border);border-radius:var(--r8);font-size:.77rem;color:var(--ink-2);cursor:pointer;transition:all var(--trans)}
-.demo-pill:hover{border-color:var(--accent);background:var(--accent-s);color:var(--accent)}
+
 
 /* DASHBOARD SHELL */
 .dashboard{display:none;min-height:100vh;background:var(--surface)}
@@ -479,6 +475,7 @@ img{display:block;max-width:100%}
 <!-- ════ FIREBASE SDK (must load before body scripts) ════ -->
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
 </head>
 <body>
 
@@ -503,20 +500,12 @@ img{display:block;max-width:100%}
         <button class="role-tab" onclick="selectRole('parent',this)"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Parent</button>
       </div>
       <form id="loginForm" onsubmit="handleLogin(event)">
-        <div class="field"><label id="idLabel">Teacher ID</label><input id="userId" placeholder="e.g. T001" required autocomplete="off" oninput="saveLoginFormState()"></div>
+        <div class="field"><label id="idLabel">Teacher ID</label><input id="userId" placeholder="e.g. T001" required autocomplete="off"></div>
         <div class="field" id="parentCodeField" style="display:none"><label>Parent Access Code</label><input id="parentCode" placeholder="6-digit access code"></div>
-        <div class="field"><label>Password</label><div class="pw-wrap"><input id="password" type="password" placeholder="Enter password" required oninput="saveLoginFormState()"><button type="button" class="pw-toggle" onclick="togglePw('password','eyeLogin')"><svg id="eyeLogin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
+        <div class="field"><label>Password</label><div class="pw-wrap"><input id="password" type="password" placeholder="Enter password" required><button type="button" class="pw-toggle" onclick="togglePw('password','eyeLogin')"><svg id="eyeLogin" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg></button></div></div>
         <div class="error-box" id="errorBox"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg><span id="errorTxt">Invalid credentials.</span></div>
         <button type="submit" class="login-submit">Sign In</button>
       </form>
-      <div class="demo-section">
-        <div class="demo-label">Quick Demo Access</div>
-        <div class="demo-pills">
-          <div class="demo-pill" onclick="fillDemo('teacher')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><span>Teacher — <strong>T001</strong> / teacher123</span></div>
-          <div class="demo-pill" onclick="fillDemo('student')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5z"/></svg><span>Student — <strong>123456789012</strong> / student123</span></div>
-          <div class="demo-pill" onclick="fillDemo('parent')"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Parent — LRN <strong>123456789012</strong> / Code: <strong>P12345</strong></span></div>
-        </div>
-      </div>
     </div>
   </div>
 </div>
@@ -1077,9 +1066,9 @@ var gradesMap = {
 };
 
 var studentAccounts = {
-  '123456789012':{password:'student123',studentId:'S001'},
-  '123456789013':{password:'student123',studentId:'S002'},
-  '123456789014':{password:'student123',studentId:'S003'},
+  '123456789012':{studentId:'S001'},
+  '123456789013':{studentId:'S002'},
+  '123456789014':{studentId:'S003'},
 };
 
 // Checklist: teacher sets status per student per subject
@@ -1111,6 +1100,7 @@ var firebaseConfig = {
 };
 if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
 var db = firebase.firestore();
+var auth = firebase.auth(); // ✅ Secure authentication
 var firestoreReady = false;
 
 // ─── Seed + Load All Data from Firestore ───
@@ -1140,9 +1130,9 @@ async function loadAllData() {
     var accSnap = await db.collection('studentAccounts').get();
     if (accSnap.empty) {
       var seedAccs = {
-        '123456789012': {password:'student123',studentId:'S001'},
-        '123456789013': {password:'student123',studentId:'S002'},
-        '123456789014': {password:'student123',studentId:'S003'},
+        '123456789012': {studentId:'S001'},
+        '123456789013': {studentId:'S002'},
+        '123456789014': {studentId:'S003'},
       };
       var batch2 = db.batch();
       Object.keys(seedAccs).forEach(function(lrn) {
@@ -1158,7 +1148,7 @@ async function loadAllData() {
     // ── TEACHER ACCOUNT ──
     var teacherDoc = await db.collection('users').doc('T001').get();
     if (!teacherDoc.exists) {
-      await db.collection('users').doc('T001').set({role:'teacher',password:'teacher123',name:'Ms. Bonabel G. Bontoyan'});
+      await db.collection('users').doc('T001').set({role:'teacher',name:'Ms. Bonabel G. Bontoyan',email:'b.bontoyan@pcshs.edu.ph'});
     }
 
     // ── GRADES ──
@@ -1396,22 +1386,11 @@ function selectRole(role,btn){
   document.getElementById('userId').placeholder=placeholders[role];
   document.getElementById('parentCodeField').style.display=role==='parent'?'block':'none';
   document.getElementById('password').placeholder=role==='parent'?'Parent Access Code':'Enter password';
-  sessionStorage.setItem('pcshs_form_role',role);
 }
 
-function saveLoginFormState(){
-  sessionStorage.setItem('pcshs_form_uid',document.getElementById('userId').value);
-  sessionStorage.setItem('pcshs_form_pw',document.getElementById('password').value);
-  var pc=document.getElementById('parentCode');
-  if(pc)sessionStorage.setItem('pcshs_form_pc',pc.value);
-}
+// saveLoginFormState removed — no longer needed with Firebase Auth
 
-function fillDemo(role){
-  var tab=document.querySelectorAll('.role-tab');
-  if(role==='teacher'){selectRole('teacher',tab[0]);document.getElementById('userId').value='T001';document.getElementById('password').value='teacher123';}
-  else if(role==='student'){selectRole('student',tab[1]);document.getElementById('userId').value='123456789012';document.getElementById('password').value='student123';}
-  else if(role==='parent'){selectRole('parent',tab[2]);document.getElementById('userId').value='123456789012';document.getElementById('parentCodeField').style.display='block';document.getElementById('parentCode').value='P12345';document.getElementById('password').value='P12345';}
-}
+// fillDemo() removed — credentials no longer exposed in source code
 
 async function handleLogin(e){
   e.preventDefault();
@@ -1421,62 +1400,79 @@ async function handleLogin(e){
   errBox.classList.remove('show');
   document.getElementById('loadingScreen').classList.add('active');
   try {
-    // Always load fresh data from Firestore on login
-    await loadAllData();
-    var ok=false;
+    var email='';
+
     if(currentRole==='teacher'){
-      // Check teacher credentials in Firestore
+      // I-lookup ang teacher email gamit ang Teacher ID (e.g. T001)
       var tDoc=await db.collection('users').doc(uid).get();
-      if(tDoc.exists&&tDoc.data().role==='teacher'&&tDoc.data().password===pw){ok=true;}
-    }
-    else if(currentRole==='student'){
-      // Check student account in Firestore
-      var acc=studentAccounts[uid];
-      if(acc&&acc.password===pw){ok=true;loggedInStudentId=acc.studentId;}
-      else {
-        // Try fetching directly from Firestore
-        var aDoc=await db.collection('studentAccounts').doc(uid).get();
-        if(aDoc.exists&&aDoc.data().password===pw){ok=true;loggedInStudentId=aDoc.data().studentId;}
+      if(!tDoc.exists||tDoc.data().role!=='teacher'){
+        throw {code:'auth/user-not-found'};
       }
+      email=tDoc.data().email;
+
+    } else if(currentRole==='student'){
+      // I-lookup ang student email gamit ang LRN
+      var aDoc=await db.collection('studentAccounts').doc(uid).get();
+      if(!aDoc.exists){
+        throw {code:'auth/user-not-found'};
+      }
+      email=aDoc.data().email;
+      loggedInStudentId=aDoc.data().studentId;
+
+    } else if(currentRole==='parent'){
+      // I-lookup ang parent email gamit ang LRN ng anak
+      var pSnap=await db.collection('parentAccounts').where('studentLRN','==',uid).get();
+      if(pSnap.empty){
+        throw {code:'auth/user-not-found'};
+      }
+      email=pSnap.docs[0].data().email;
+      loggedInParentStudentId=pSnap.docs[0].data().studentId;
     }
-    else if(currentRole==='parent'){
-      var pCode=document.getElementById('parentCode').value.trim()||pw;
-      var found=Object.values(studentsMap).find(function(s){return s.lrn===uid&&s.parentCode===pCode;});
-      if(found){ok=true;loggedInParentStudentId=found.id;}
-    }
+
+    // ✅ Firebase Auth ang mag-verify ng password — hindi na tayo
+    await auth.signInWithEmailAndPassword(email, pw);
+
+    // Load fresh data then redirect
+    await loadAllData();
     document.getElementById('loadingScreen').classList.remove('active');
-    if(ok){
-      sessionStorage.setItem('pcshs_role',currentRole);
-      if(currentRole==='student')sessionStorage.setItem('pcshs_sid',loggedInStudentId);
-      if(currentRole==='parent')sessionStorage.setItem('pcshs_pid',loggedInParentStudentId);
-      document.getElementById('loginPage').style.display='none';
-      if(currentRole==='teacher'){document.getElementById('teacherDashboard').classList.add('active');initTeacherDashboard();}
-      else if(currentRole==='student'){document.getElementById('studentDashboard').classList.add('active');initStudentDashboard();}
-      else if(currentRole==='parent'){document.getElementById('parentDashboard').classList.add('active');initParentDashboard();}
-    }else{
-      void errBox.offsetWidth;errBox.classList.add('show');
-      document.getElementById('errorTxt').textContent='Invalid credentials. Please try again.';
+    document.getElementById('loginPage').style.display='none';
+    if(currentRole==='teacher'){
+      document.getElementById('teacherDashboard').classList.add('active');
+      initTeacherDashboard();
+    } else if(currentRole==='student'){
+      // Re-fetch studentId from Firestore (in case it changed)
+      var freshAcc=await db.collection('studentAccounts').doc(uid).get();
+      if(freshAcc.exists) loggedInStudentId=freshAcc.data().studentId;
+      document.getElementById('studentDashboard').classList.add('active');
+      initStudentDashboard();
+    } else if(currentRole==='parent'){
+      document.getElementById('parentDashboard').classList.add('active');
+      initParentDashboard();
     }
+
   } catch(err) {
     document.getElementById('loadingScreen').classList.remove('active');
-    void errBox.offsetWidth;errBox.classList.add('show');
-    document.getElementById('errorTxt').textContent='Connection error. Check your internet.';
+    void errBox.offsetWidth;
+    errBox.classList.add('show');
+    var msg='Invalid credentials. Please try again.';
+    if(err.code==='auth/too-many-requests') msg='Too many failed attempts. Subukan ulit mamaya.';
+    if(err.code==='auth/network-request-failed') msg='Connection error. Check your internet.';
+    document.getElementById('errorTxt').textContent=msg;
     console.error(err);
   }
 }
 
 function logout(){
-  sessionStorage.removeItem('pcshs_role');
-  sessionStorage.removeItem('pcshs_sid');
-  sessionStorage.removeItem('pcshs_pid');
-  sessionStorage.removeItem('pcshs_form_role');
-  sessionStorage.removeItem('pcshs_form_uid');
-  sessionStorage.removeItem('pcshs_form_pw');
-  sessionStorage.removeItem('pcshs_form_pc');
-  ['teacherDashboard','studentDashboard','parentDashboard'].forEach(function(id){document.getElementById(id).classList.remove('active');});
-  document.getElementById('loginPage').style.display='flex';
-  document.getElementById('loginForm').reset();
-  loggedInStudentId=null;loggedInParentStudentId=null;
+  auth.signOut().then(function(){
+    ['teacherDashboard','studentDashboard','parentDashboard'].forEach(function(id){
+      document.getElementById(id).classList.remove('active');
+    });
+    document.getElementById('loginPage').style.display='flex';
+    document.getElementById('loginForm').reset();
+    loggedInStudentId=null;
+    loggedInParentStudentId=null;
+    currentRole='teacher';
+  });
 }
 
 // ═══════════════════════════════════════════════════
@@ -2496,53 +2492,57 @@ function removeCustomSubject(semKey,subId){
 }
 
 // ═══════════════════════════════════════════════════
-// INIT — restore session on refresh
+// INIT — Secure session restore via Firebase Auth
 // ═══════════════════════════════════════════════════
 applyTheme();
-(async function restoreSession(){
-  // Restore form fields
-  var savedRole=sessionStorage.getItem('pcshs_form_role');
-  var savedUid=sessionStorage.getItem('pcshs_form_uid');
-  var savedPw=sessionStorage.getItem('pcshs_form_pw');
-  var savedPc=sessionStorage.getItem('pcshs_form_pc');
-  if(savedRole){
-    var tabs=document.querySelectorAll('.role-tab');
-    var idx=savedRole==='teacher'?0:savedRole==='student'?1:2;
-    if(tabs[idx])selectRole(savedRole,tabs[idx]);
+auth.onAuthStateChanged(async function(user){
+  if(!user){
+    // Walang naka-login — ipakita ang login page
+    document.getElementById('loginPage').style.display='';
+    return;
   }
-  if(savedUid)document.getElementById('userId').value=savedUid;
-  if(savedPw)document.getElementById('password').value=savedPw;
-  if(savedPc&&document.getElementById('parentCode'))document.getElementById('parentCode').value=savedPc;
-
-  var role=sessionStorage.getItem('pcshs_role');
-  if(!role)return;
-
-  // Load data from Firestore before restoring session
+  // May naka-login — i-restore ang session
   document.getElementById('loadingScreen').classList.add('active');
-  try { await loadAllData(); } catch(e){ console.error(e); }
-  document.getElementById('loadingScreen').classList.remove('active');
+  try {
+    await loadAllData();
 
-  currentRole=role;
-  if(role==='student'){
-    var sid=sessionStorage.getItem('pcshs_sid');
-    if(!sid||!studentsMap[sid])return;
-    loggedInStudentId=sid;
+    // I-get ang role mula Firestore
+    var userDoc=await db.collection('users').doc(user.uid).get();
+    var role;
+
+    if(userDoc.exists){
+      role=userDoc.data().role; // 'teacher' o 'parent'
+    } else {
+      // Baka student — tingnan sa studentAccounts
+      var sSnap=await db.collection('studentAccounts').where('uid','==',user.uid).get();
+      if(!sSnap.empty){
+        role='student';
+        loggedInStudentId=sSnap.docs[0].data().studentId;
+      }
+    }
+
+    document.getElementById('loadingScreen').classList.remove('active');
+
+    if(!role) return;
+    currentRole=role;
     document.getElementById('loginPage').style.display='none';
-    document.getElementById('studentDashboard').classList.add('active');
-    initStudentDashboard();
-  } else if(role==='teacher'){
-    document.getElementById('loginPage').style.display='none';
-    document.getElementById('teacherDashboard').classList.add('active');
-    initTeacherDashboard();
-  } else if(role==='parent'){
-    var pid=sessionStorage.getItem('pcshs_pid');
-    if(!pid||!studentsMap[pid])return;
-    loggedInParentStudentId=pid;
-    document.getElementById('loginPage').style.display='none';
-    document.getElementById('parentDashboard').classList.add('active');
-    initParentDashboard();
+
+    if(role==='teacher'){
+      document.getElementById('teacherDashboard').classList.add('active');
+      initTeacherDashboard();
+    } else if(role==='student'){
+      document.getElementById('studentDashboard').classList.add('active');
+      initStudentDashboard();
+    } else if(role==='parent'){
+      loggedInParentStudentId=userDoc.data().studentId;
+      document.getElementById('parentDashboard').classList.add('active');
+      initParentDashboard();
+    }
+  } catch(e){
+    console.error(e);
+    document.getElementById('loadingScreen').classList.remove('active');
   }
-})();
+});
 </script>
 <!-- Add Subject Modal -->
 <div class="modal" id="addSubjectModal">
